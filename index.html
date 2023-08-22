@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>⚡ ng-class to className Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <script>
+    function processNgClassCallback(ngClassObject) {
+      classes = " ";
+      classArr = ngClassObject.split(",");
+      for (i = 0; i < classArr.length; i++) {
+        x = classArr[i].split(':');
+        if (x[1].trim() === 'true') {
+          classes = classes + ' ' + x[0];
+        } else {
+          classes = `${classes} + ( ${x[1]} ? ${x[0]} + ' ' : ' ' )`;
+        }
+      }
+      classes = `className = { ${classes} }`;
+      return classes;
+    }
+
+    function processNgClass() {
+      const ngClassRegex = /ng-class=["']\{(.*?)\}["']/g;
+      const inputTextArea = document.getElementById("input-text");
+      const outputTextArea = document.getElementById("output-text");
+      const text = inputTextArea.value;
+      let modifiedText = text;
+      let match;
+      while ((match = ngClassRegex.exec(text)) !== null) {
+        const ngClassObject = match[1];
+        const replacementText = processNgClassCallback(ngClassObject);
+        modifiedText = modifiedText.replace(match[0], replacementText);
+      }
+      outputTextArea.value = modifiedText;
+    }
+  </script>
+</head>
+<body>
+  <h1>ng-class to className Converter</h1>
+  <label for="input-text">Input Text:</label><br />
+  <textarea id="input-text" rows="5" cols="50"></textarea><br />
+  <button onclick="processNgClass()">Convert</button><br />
+  <label for="output-text">Output Text:</label><br />
+  <textarea id="output-text" rows="5" cols="50" readonly></textarea>
+</body>
+</html>
